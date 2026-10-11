@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARD GRANT FINDER - Official Nigerian Opportunities Platform</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkNavy: '#040D1A',
+                        navy: '#0A192F',
+                        royalBlue: '#1E3A8A',
+                        blue: '#2563EB',
+                        gold: '#D4AF37',
+                        goldHover: '#B59226',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .view-section { display: none; }
+        .view-section.active { display: block; }
+    </style>
+</head>
+<body class="bg-darkNavy text-slate-100 min-h-screen flex flex-col selection:bg-gold selection:text-darkNavy">
+
+    <!-- NAVIGATION BAR -->
+    <header class="bg-navy border-b border-slate-800 sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="#home" onclick="switchView('home')" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gold flex items-center justify-center font-bold text-darkNavy text-xl shadow-lg group-hover:scale-105 transition-transform">A</div>
+                <div>
+                    <span class="text-xl font-extrabold text-white tracking-wide block">ARD GRANT FINDER</span>
+                    <span class="text-[10px] text-gold uppercase tracking-widest block font-semibold">Nigerian Opportunities Gateway</span>
+                </div>
+            </a>
+
+            <!-- Desktop Links -->
+            <nav class="hidden lg:flex items-center gap-6 text-sm font-medium">
+                <a href="#home" onclick="switchView('home')" class="text-slate-300 hover:text-gold transition-colors">Home</a>
+                <a href="#directory" onclick="switchView('directory')" class="text-slate-300 hover:text-gold transition-colors">Directory</a>
+                <a href="#directory" onclick="filterByCategory('government')" class="text-slate-300 hover:text-gold transition-colors">Govt Recruitment</a>
+                <a href="#directory" onclick="filterByCategory('empowerment')" class="text-slate-300 hover:text-gold transition-colors">Empowerment</a>
+                <a href="#dashboard" onclick="switchView('dashboard')" class="text-slate-300 hover:text-gold transition-colors">Dashboard</a>
+                <a href="#admin" onclick="switchView('admin')" class="text-slate-300 hover:text-gold transition-colors">Admin</a>
+            </nav>
+
+            <!-- Auth Buttons & Mobile Menu Trigger -->
+            <div class="hidden lg:flex items-center gap-3">
+                <div id="authNavButtons" class="flex items-center gap-3">
+                    <a href="#login" onclick="switchView('login')" class="px-4 py-2 text-slate-300 hover:text-white border border-slate-700 hover:border-slate-500 rounded-xl text-sm font-semibold transition">Sign In</a>
+                    <a href="#register" onclick="switchView('register')" class="px-4 py-2 bg-gold hover:bg-goldHover text-darkNavy font-bold rounded-xl text-sm transition shadow-md">Create Account</a>
+                </div>
+                <div id="userNavSession" class="hidden items-center gap-3">
+                    <span id="navUserEmailDisplay" class="text-xs text-gold font-medium"></span>
+                    <button onclick="handleSignOut()" class="px-3 py-1.5 bg-red-900/30 border border-red-500/50 hover:bg-red-900/60 text-red-200 text-xs font-semibold rounded-lg transition">Sign Out</button>
+                </div>
+            </div>
+
+            <button onclick="toggleMobileMenu()" class="lg:hidden text-slate-300 hover:text-white p-2 focus:outline-none">
+                <i id="mobileMenuIcon" class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden lg:hidden bg-navy border-b border-slate-800 px-4 pt-2 pb-6 space-y-3">
+            <a href="#home" onclick="switchView('home'); toggleMobileMenu();" class="block py-2 text-slate-300 hover:text-gold">Home</a>
+            <a href="#directory" onclick="switchView('directory'); toggleMobileMenu();" class="block py-2 text-slate-300 hover:text-gold">Directory</a>
+            <a href="#dashboard" onclick="switchView('dashboard'); toggleMobileMenu();" class="block py-2 text-slate-300 hover:text-gold">Dashboard</a>
+            <a href="#admin" onclick="switchView('admin'); toggleMobileMenu();" class="block py-2 text-slate-300 hover:text-gold">Admin Portal</a>
+            <div id="mobileAuthContainer" class="pt-4 border-t border-slate-800 flex flex-col gap-2">
+                <a href="#login" onclick="switchView('login'); toggleMobileMenu();" class="w-full text-center py-2.5 text-slate-300 border border-slate-700 rounded-xl text-sm">Sign In</a>
+                <a href="#register" onclick="switchView('register'); toggleMobileMenu();" class="w-full text-center py-2.5 bg-gold text-darkNavy font-bold rounded-xl text-sm">Create Account</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="flex-grow">
+
+        <!-- 1. HOMEPAGE VIEW -->
+        <section id="view-home" class="view-section active">
+            <div class="py-20 px-4 text-center bg-gradient-to-b from-navy to-darkNavy border-b border-slate-800/60">
+                <div class="max-w-4xl mx-auto">
+                    <span class="bg-royalBlue/40 text-gold text-xs font-semibold px-4 py-1.5 rounded-full border border-gold/30 inline-flex items-center gap-2 mb-6">
+                        <i class="fa-solid fa-shield-halved"></i> Single Source of Verified Nigerian Opportunities
+                    </span>
+                    <h1 class="text-4xl md:text-6xl font-extrabold text-white tracking-tight mb-6">Verified Nigerian Grants & Opportunities</h1>
+                    <p class="text-lg text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">Discover grants, scholarships, jobs, government recruitment, empowerment programmes and skills opportunities in one centralized platform.</p>
+                    
+                    <div class="bg-navy/90 p-3 rounded-2xl border border-slate-700 shadow-2xl max-w-3xl mx-auto flex flex-col md:flex-row gap-3">
+                        <div class="relative flex-grow">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400"></i>
+                            <input type="text" id="homeSearchInput" placeholder="Search grants, 3MTT, SMEDAN, scholarships..." class="w-full bg-darkNavy border border-slate-700 text-white pl-11 pr-4 py-3 rounded-xl focus:outline-none focus:border-gold text-sm">
+                        </div>
+                        <button onclick="executeHomeSearch()" class="bg-gold hover:bg-goldHover text-darkNavy font-bold px-8 py-3 rounded-xl text-sm transition shadow-lg">Search Now</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="max-w-7xl mx-auto px-4 py-12 grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="bg-navy/50 p-6 rounded-2xl border border-slate-800 text-center shadow-md">
+                    <h3 class="text-3xl font-extrabold text-gold mb-1">Official</h3>
+                    <p class="text-slate-400 text-xs uppercase tracking-wider">Source Links</p>
+                </div>
+                <div class="bg-navy/50 p-6 rounded-2xl border border-slate-800 text-center shadow-md">
+                    <h3 class="text-3xl font-extrabold text-gold mb-1">36 States</h3>
+                    <p class="text-slate-400 text-xs uppercase tracking-wider">Plus FCT Covered</p>
+                </div>
+                <div class="bg-navy/50 p-6 rounded-2xl border border-slate-800 text-center shadow-md">
+                    <h3 class="text-3xl font-extrabold text-gold mb-1">6+</h3>
+                    <p class="text-slate-400 text-xs uppercase tracking-wider">Opportunity Sectors</p>
+                </div>
+                <div class="bg-navy/50 p-6 rounded-2xl border border-slate-800 text-center shadow-md">
+                    <h3 class="text-3xl font-extrabold text-gold mb-1">Live</h3>
+                    <p class="text-slate-400 text-xs uppercase tracking-wider">Status Tracking</p>
+                </div>
+            </div>
+
+            <!-- Categories Grid -->
+            <div class="max-w-7xl mx-auto px-4 py-12">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <span class="text-xs text-gold uppercase tracking-widest font-semibold block mb-1">Categories</span>
+                        <h2 class="text-2xl md:text-3xl font-bold text-white">Explore Opportunities</h2>
+                    </div>
+                    <button onclick="switchView('directory')" class="text-gold text-sm font-semibold hover:underline">View All Directory →</button>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4" id="homeCategoriesGrid"></div>
+            </div>
+
+            <!-- Featured Opportunities -->
+            <div class="max-w-7xl mx-auto px-4 py-12 border-t border-slate-800/60">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <span class="text-xs text-gold uppercase tracking-widest font-semibold block mb-1">Curated Records</span>
+                        <h2 class="text-2xl md:text-3xl font-bold text-white">Featured Opportunities</h2>
+                    </div>
+                    <button onclick="switchView('directory')" class="text-gold text-sm font-semibold hover:underline">Browse All Records →</button>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="homeFeaturedGrid"></div>
+            </div>
+        </section>
+
+        <!-- 2. OPPORTUNITY DIRECTORY VIEW -->
+        <section id="view-directory" class="view-section">
+            <div class="max-w-7xl mx-auto px-4 py-10">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-extrabold text-white mb-2">Opportunity Directory</h1>
+                    <p class="text-slate-400 text-sm">Filter and search verified Nigerian grants, jobs, scholarships, and programmes.</p>
+                </div>
+
+                <!-- Filters -->
+                <div class="bg-navy p-6 rounded-2xl border border-slate-800 shadow-xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Keyword Search</label>
+                        <input type="text" id="dirSearch" placeholder="Search title, agency..." class="w-full bg-darkNavy border border-slate-700 px-3 py-2.5 rounded-xl text-white text-sm focus:outline-none focus:border-gold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Category</label>
+                        <select id="dirCategory" class="w-full bg-darkNavy border border-slate-700 px-3 py-2.5 rounded-xl text-white text-sm focus:outline-none focus:border-gold">
+                            <option value="">All Categories</option>
+                            <option value="grants">Grants</option>
+                            <option value="scholarships">Scholarships</option>
+                            <option value="jobs">Jobs</option>
+                            <option value="government">Government Recruitment</option>
+                            <option value="empowerment">Empowerment</option>
+                            <option value="skills">Skills & Training</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">State Location</label>
+                        <select id="dirState" class="w-full bg-darkNavy border border-slate-700 px-3 py-2.5 rounded-xl text-white text-sm focus:outline-none focus:border-gold">
+                            <option value="">All States / National</option>
+                            <option value="National">National</option>
+                            <option value="Abuja (FCT)">Abuja (FCT)</option>
+                            <option value="Lagos">Lagos</option>
+                            <option value="Kano">Kano</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Status</label>
+                        <select id="dirStatus" class="w-full bg-darkNavy border border-slate-700 px-3 py-2.5 rounded-xl text-white text-sm focus:outline-none focus:border-gold">
+                            <option value="">All Statuses</option>
+                            <option value="Open">Open</option>
+                            <option value="Ongoing">Ongoing</option>
+                            <option value="Status to be confirmed">Status to be confirmed</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button onclick="renderDirectoryGrid()" class="w-full bg-gold hover:bg-goldHover text-darkNavy font-bold py-2.5 rounded-xl text-sm transition shadow-md">Apply Filters</button>
+                    </div>
+                </div>
+
+                <div id="directoryGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+        </section>
+
+        <!-- 3. OPPORTUNITY DETAILS VIEW -->
+        <section id="view-details" class="view-section">
+            <div class="max-w-4xl mx-auto px-4 py-12">
+                <button onclick="switchView('directory')" class="text-gold text-sm font-semibold mb-6 inline-flex items-center gap-2 hover:underline">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Directory
+                </button>
+                <div id="detailsContentBox" class="bg-navy p-8 md:p-10 rounded-3xl border border-slate-800 shadow-2xl"></div>
+            </div>
+        </section>
+
+        <!-- 4. DASHBOARD VIEW -->
+        <section id="view-dashboard" class="view-section">
+            <div class="max-w-7xl mx-auto px-4 py-10">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 border-b border-slate-800 pb-6">
+                    <div>
+                        <h1 class="text-3xl font-extrabold text-white mb-1">ARD GRANT FINDER Dashboard</h1>
+                        <p class="text-slate-400 text-sm">Welcome back, <span id="dashProfileName" class="text-gold font-semibold">User</span> (<span id="dashProfileEmail">email</span>)</p>
+                    </div>
+                    <button onclick="switchView('directory')" class="bg-gold text-darkNavy font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-goldHover transition shadow-md">Browse Directory</button>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6 mb-10">
+                    <div class="bg-navy p-6 rounded-2xl border border-slate-800 shadow-md">
+                        <span class="text-slate-400 text-xs font-semibold uppercase tracking-wider block mb-2">Saved Opportunities</span>
+                        <p class="text-4xl font-extrabold text-gold" id="dashSavedCount">0</p>
+                    </div>
+                    <div class="bg-navy p-6 rounded-2xl border border-slate-800 shadow-md">
+                        <span class="text-slate-400 text-xs font-semibold uppercase tracking-wider block mb-2">Total Indexed Records</span>
+                        <p class="text-4xl font-extrabold text-blue" id="dashTotalCount">0</p>
+                    </div>
+                    <div class="bg-navy p-6 rounded-2xl border border-slate-800 shadow-md">
+                        <span class="text-slate-400 text-xs font-semibold uppercase tracking-wider block mb-2">Account Status</span>
+                        <p class="text-2xl font-bold text-green-400 mt-1">Verified Session</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 class="text-xl font-bold text-white mb-4">Your Saved Opportunities</h2>
+                    <div id="dashSavedList" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. LOGIN VIEW -->
+        <section id="view-login" class="view-section">
+            <div class="max-w-md mx-auto px-4 py-20">
+                <div class="bg-navy p-8 md:p-10 rounded-3xl border border-slate-800 shadow-2xl">
+                    <h1 class="text-2xl font-bold text-white mb-1">Sign In</h1>
+                    <p class="text-slate-400 text-sm mb-6">Sign in to access your dashboard and saved items.</p>
+
+                    <div id="loginAlertBox" class="hidden p-3 mb-4 rounded-xl text-sm"></div>
+
+                    <form onsubmit="handleUserLogin(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Email Address</label>
+                            <input type="email" id="loginEmailInput" required placeholder="name@example.com" class="w-full bg-darkNavy border border-slate-700 px-4 py-3 rounded-xl text-white text-sm focus:outline-none focus:border-gold">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Password</label>
+                            <input type="password" id="loginPassInput" required placeholder="••••••••" class="w-full bg-darkNavy border border-slate-700 px-4 py-3 rounded-xl text-white text-sm focus:outline-none focus:border-gold">
+                        </div>
+                        <button type="submit" class="w-full bg-gold hover:bg-goldHover text-darkNavy font-bold py-3 rounded-xl text-sm transition shadow-lg">Sign In</button>
+                    </form>
+
+                    <div class="mt-6 text-center text-sm text-slate-400">
+                        Don't have an account? <a href="#register" onclick="switchView('register')" class="text-gold font-semibold hover:underline">Create Account</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. REGISTER VIEW -->
+        <section id="view-register" class="view-section">
+            <div class="max-w-md mx-auto px-4 py-16">
+                <div class="bg-navy p-8 md:p-10 rounded-3xl border border-slate-800 shadow-2xl">
+                    <h1 class="text-2xl font-bold text-white mb-1">Create Account</h1>
+                    <p class="text-slate-400 text-sm mb-6">Register to track verified Nigerian opportunities.</p>
+
+                    <div id="registerAlertBox" class="hidden p-3 mb-4 rounded-xl text-sm"></div>
+
+                    <form onsubmit="handleUserRegister(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Full Name</label>
+                            <input type="text" id="regNameInput" required placeholder="John Doe" class="w-full bg-darkNavy border border-slate-700 px-4 py-3 rounded-xl text-white text-sm focus:outline-none focus:border-gold">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Email Address</label>
+                            <input type="email" id="regEmailInput" required placeholder="name@example.com" class="w-full bg-darkNavy border border-slate-700 px-4 py-3 rounded-xl text-white text-sm focus:outline-none focus:border-gold">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Password</label>
+                            <input type="password" id="regPassInput" required placeholder="••••••••" class="w-full bg-darkNavy border border-slate-700 px-4 py-3 rounded-xl text-white text-sm focus:outline-none focus:border-gold">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Confirm Password</label>
+                            <input type="password" id="regConfirmPassInput" required placeholder="••••••••" class="w-full bg-darkNavy border border-slate-700 px-4 py-3 rounded-xl text-white text-sm focus:outline-none focus:border-gold">
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="regTermsCheck" required class="rounded bg-darkNavy border-slate-700 text-gold focus:ring-gold">
+                            <label for="regTermsCheck" class="text-xs text-slate-400">I agree to the <a href="#terms" onclick="switchView('terms')" class="text-gold hover:underline">Terms</a> and <a href="#privacy" onclick="switchView('privacy')" class="text-gold hover:underline">Privacy Policy</a>.</label>
+                        </div>
+                        <button type="submit" class="w-full bg-gold hover:bg-goldHover text-darkNavy font-bold py-3 rounded-xl text-sm transition shadow-lg">Create Account</button>
+                    </form>
+
+                    <div class="mt-6 text-center text-sm text-slate-400">
+                        Already registered? <a href="#login" onclick="switchView('login')" class="text-gold font-semibold hover:underline">Sign In</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. ADMIN VIEW -->
+        <section id="view-admin" class="view-section">
+            <div class="max-w-6xl mx-auto px-4 py-10">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h1 class="text-3xl font-extrabold text-white mb-1">Admin Portal</h1>
+                        <p class="text-xs text-yellow-500 font-medium">* Frontend Prototype Administrator Dashboard</p>
+                    </div>
+                </div>
+                <div class="bg-navy rounded-2xl border border-slate-800 shadow-xl overflow-hidden p-6">
+                    <h2 class="text-lg font-bold text-white mb-4">Manage Opportunities Dataset</h2>
+                    <div id="adminOpportunitiesList" class="space-y-3"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. ABOUT VIEW -->
+        <section id="view-about" class="view-section">
+            <div class="max-w-4xl mx-auto px-4 py-12">
+                <div class="bg-navy p-8 md:p-12 rounded-3xl border border-slate-800 shadow-2xl space-y-6">
+                    <h1 class="text-3xl font-extrabold text-gold mb-2">About ARD GRANT FINDER</h1>
+                    <p class="text-slate-300 leading-relaxed text-sm md:text-base">A centralized Nigerian opportunities discovery platform that helps users find grants, scholarships, jobs, government recruitment, empowerment programmes, and skills/training opportunities from official sources.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. CONTACT VIEW -->
+        <section id="view-contact" class="view-section">
+            <div class="max-w-md mx-auto px-4 py-16">
+                <div class="bg-navy p-8 md:p-10 rounded-3xl border border-slate-800 shadow-2xl">
+                    <h1 class="text-2xl font-bold text-white mb-1">Contact Us</h1>
+                    <p class="text-slate-400 text-sm mb-6">Have questions or feedback? Send us a note.</p>
+                    <form onsubmit="event.preventDefault(); alert('Message sent successfully! (Prototype mode)');" class="space-y-4">
+                        <input type="text" required placeholder="Full Name" class="w-full bg-darkNavy border border-slate-700 px-4 py-3 rounded-xl text-white text-sm focus:outline-none focus:border-gold">
+                        <input type="email" required placeholder="name@example.com" class="w-full bg-darkNavy border border-slate-700 px-4 py-3 rounded-xl text-white text-sm focus:outline-none focus:border-gold">
+                        <textarea required placeholder="Your message..." class="w-full bg-darkNavy border border-slate-700 px-4 py-3 rounded-xl text-white text-sm h-28 focus:outline-none focus:border-gold"></textarea>
+                        <button type="submit" class="w-full bg-gold hover:bg-goldHover text-darkNavy font-bold py-3 rounded-xl text-sm transition shadow-lg">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10. PRIVACY VIEW -->
+        <section id="view-privacy" class="view-section">
+            <div class="max-w-3xl mx-auto px-4 py-12">
+                <div class="bg-navy p-8 md:p-10 rounded-3xl border border-slate-800 shadow-2xl space-y-4 text-slate-300 text-sm leading-relaxed">
+                    <h1 class="text-2xl font-bold text-white mb-4">Privacy Policy</h1>
+                    <p>ARD GRANT FINDER respects your privacy and uses browser LocalStorage strictly for local user sessions and saved items.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 11. TERMS VIEW -->
+        <section id="view-terms" class="view-section">
+            <div class="max-w-3xl mx-auto px-4 py-12">
+                <div class="bg-navy p-8 md:p-10 rounded-3xl border border-slate-800 shadow-2xl space-y-4 text-slate-300 text-sm leading-relaxed">
+                    <h1 class="text-2xl font-bold text-white mb-4">Terms of Service</h1>
+                    <p>ARD GRANT FINDER is an opportunity discovery platform. Always verify requirements directly on official government or institutional websites.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-navy border-t border-slate-800 py-10 mt-auto text-slate-400 text-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-4 gap-8 mb-8">
+            <div>
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-8 h-8 rounded-lg bg-gold flex items-center justify-center font-bold text-darkNavy">A</div>
+                    <span class="text-white font-bold text-lg">ARD GRANT FINDER</span>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">Single source of verified Nigerian grants, scholarships, jobs, and empowerment opportunities.</p>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold text-xs uppercase tracking-wider mb-3">Quick Links</h4>
+                <ul class="space-y-2 text-xs">
+                    <li><a href="#home" onclick="switchView('home')" class="hover:text-gold">Home</a></li>
+                    <li><a href="#directory" onclick="switchView('directory')" class="hover:text-gold">Directory</a></li>
+                    <li><a href="#dashboard" onclick="switchView('dashboard')" class="hover:text-gold">User Dashboard</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold text-xs uppercase tracking-wider mb-3">Legal & Info</h4>
+                <ul class="space-y-2 text-xs">
+                    <li><a href="#about" onclick="switchView('about')" class="hover:text-gold">About Us</a></li>
+                    <li><a href="#contact" onclick="switchView('contact')" class="hover:text-gold">Contact</a></li>
+                    <li><a href="#privacy" onclick="switchView('privacy')" class="hover:text-gold">Privacy Policy</a></li>
+                    <li><a href="#terms" onclick="switchView('terms')" class="hover:text-gold">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold text-xs uppercase tracking-wider mb-3">Notice</h4>
+                <p class="text-xs text-slate-500 leading-relaxed">Always confirm application guidelines on official government domains before submitting confidential data.</p>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 border-t border-slate-800/80 text-center text-xs text-slate-500">
+            &copy; 2026 ARD GRANT FINDER. All rights reserved. Built for Nigerian Empowerment.
+        </div>
+    </footer>
+
+    <!-- SCRIPT ENGINE -->
+    <script>
+        const DATASET_VERSION = 2;
+        const DATASET_KEY = 'ardGrantFinderData';
+        const VERSION_KEY = 'ardGrantFinderDataVersion';
+        const SAVED_KEY = 'ardGrantFinderSavedOpportunities';
+        const USERS_KEY = 'ardGrantFinderUsers';
+        const CURRENT_USER_KEY = 'ardGrantFinderCurrentUser';
+
+        const defaultOpportunities = [
+            {
+                id: 'opp-001',
+                title: '3MTT Training Programme (3 Million Technical Talents)',
+                organization: 'Federal Ministry of Communications, Innovation & Digital Economy',
+                category: 'skills',
+                providerType: 'Government',
+                description: 'Nationwide technical skill development initiative targeting key digital skills including software development, data science, and AI.',
+                eligibility: 'Open to Nigerian youths interested in technical skill acquisition.',
+                location: 'Nationwide',
+                state: 'National',
+                deadline: 'Status to be confirmed',
+                status: 'Status to be confirmed',
+                verification: 'Official Portal',
+                officialUrl: 'https://3mtt.nitda.gov.ng/',
+                dateAdded: '2026-01-15',
+                featured: true,
+                keywords: ['3mtt', 'nitda', 'technology', 'skills', 'training']
+            },
+            {
+                id: 'opp-002',
+                title: 'NELFUND Student Loan Scheme',
+                organization: 'Nigerian Education Loan Fund',
+                category: 'scholarships',
+                providerType: 'Government',
+                description: 'Interest-free student loans provided by the Federal Government of Nigeria for tertiary education students.',
+                eligibility: 'Enrolled students of approved public tertiary institutions in Nigeria.',
+                location: 'Nationwide',
+                state: 'National',
+                deadline: 'Status to be confirmed',
+                status: 'Status to be confirmed',
+                verification: 'Official Portal',
+                officialUrl: 'https://www.nelf.gov.ng/',
+                dateAdded: '2026-01-20',
+                featured: true,
+                keywords: ['nelfund', 'education', 'loans', 'scholarships', 'students']
+            },
+            {
+                id: 'opp-003',
+                title: 'Nigeria Customs Service (NCS) Portal',
+                organization: 'Nigeria Customs Service',
+                category: 'government',
+                providerType: 'Government',
+                description: 'Official recruitment and institutional portal for the Nigeria Customs Service.',
+                eligibility: 'Nigerian citizens meeting prescribed physical and academic qualifications.',
+                location: 'Nationwide',
+                state: 'National',
+                deadline: 'Status to be confirmed',
+                status: 'Status to be confirmed',
+                verification: 'Official website listed',
+                officialUrl: 'https://customs.gov.ng/',
+                dateAdded: '2026-02-01',
+                featured: true,
+                keywords: ['customs', 'ncs', 'recruitment', 'government', 'jobs']
+            },
+            {
+                id: 'opp-004',
+                title: 'Nigeria Immigration Service (NIS) Portal',
+                organization: 'Nigeria Immigration Service',
+                category: 'government',
+                providerType: 'Government',
+                description: 'Official institutional and recruitment gateway for the Nigeria Immigration Service.',
+                eligibility: 'Nigerian citizens who fulfill official service requirements.',
+                location: 'Nationwide',
+                state: 'National',
+                deadline: 'Status to be confirmed',
+                status: 'Status to be confirmed',
+                verification: 'Official website listed',
+                officialUrl: 'https://immigration.gov.ng/',
+                dateAdded: '2026-02-05',
+                featured: false,
+                keywords: ['immigration', 'nis', 'recruitment', 'government', 'jobs']
+            },
+            {
+                id: 'opp-005',
+                title: 'SMEDAN Business Development Support & Grants',
+                organization: 'Small and Medium Enterprises Development Agency of Nigeria',
+                category: 'grants',
+                providerType: 'Government',
+                description: 'Institutional guidance, capacity building, and financial empowerment programs for MSMEs across Nigeria.',
+                eligibility: 'Registered small business owners and entrepreneurs in Nigeria.',
+                location: 'Nationwide',
+                state: 'National',
+                deadline: 'Status to be confirmed',
+                status: 'Status to be confirmed',
+                verification: 'Official website listed',
+                officialUrl: 'https://smedan.gov.ng/',
+                dateAdded: '2026-02-10',
+                featured: true,
+                keywords: ['smedan', 'msme', 'grants', 'business', 'empowerment']
+            },
+            {
+                id: 'opp-006',
+                title: 'Bank of Industry (BOI) MSME Matching Fund',
+                organization: 'Bank of Industry',
+                category: 'grants',
+                providerType: 'Institution',
+                description: 'Development financing and targeted funds for industrial development and enterprise expansion in Nigeria.',
+                eligibility: 'Nigerian enterprises operating in manufacturing, agro-processing, and key growth sectors.',
+                location: 'Nationwide',
+                state: 'National',
+                deadline: 'Status to be confirmed',
+                status: 'Status to be confirmed',
+                verification: 'Official website listed',
+                officialUrl: 'https://www.boi.ng/',
+                dateAdded: '2026-02-12',
+                featured: false,
+                keywords: ['boi', 'bank of industry', 'msme', 'loans', 'grants']
+            }
+        ];
+
+        function getOpportunities() {
+            const storedVersion = localStorage.getItem(VERSION_KEY);
+            const storedData = localStorage.getItem(DATASET_KEY);
+            if (!storedVersion || parseInt(storedVersion, 10) < DATASET_VERSION || !storedData) {
+                localStorage.setItem(DATASET_KEY, JSON.stringify(defaultOpportunities));
+                localStorage.setItem(VERSION_KEY, DATASET_VERSION.toString());
+                return defaultOpportunities;
+            }
+            try { return JSON.parse(storedData); } catch (e) { return defaultOpportunities; }
+        }
+
+        function getOpportunityById(id) {
+            return getOpportunities().find(o => String(o.id) === String(id)) || null;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function switchView(viewName, paramId = null) {
+            if ((viewName === 'dashboard' || viewName === 'admin') && !getCurrentUserSession()) {
+                alert('Please sign in to access your dashboard.');
+                switchView('login');
+                return;
+            }
+
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            const target = document.getElementById(`view-${viewName}`);
+            if (target) {
+                target.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            if (viewName === 'home') renderHomeViews();
+            if (viewName === 'directory') renderDirectoryGrid();
+            if (viewName === 'details' && paramId) renderDetailsView(paramId);
+            if (viewName === 'dashboard') renderDashboardView();
+            if (viewName === 'admin') renderAdminView();
+
+            history.pushState(null, '', `#${viewName}`);
+        }
+
+        function renderHomeViews() {
+            const cats = [
+                { title: 'Grants', icon: 'fa-hand-holding-dollar', key: 'grants' },
+                { title: 'Scholarships', icon: 'fa-graduation-cap', key: 'scholarships' },
+                { title: 'Jobs', icon: 'fa-briefcase', key: 'jobs' },
+                { title: 'Government', icon: 'fa-building-columns', key: 'government' },
+                { title: 'Empowerment', icon: 'fa-rocket', key: 'empowerment' },
+                { title: 'Skills & Training', icon: 'fa-laptop-code', key: 'skills' }
+            ];
+
+            document.getElementById('homeCategoriesGrid').innerHTML = cats.map(c => `
+                <button onclick="filterByCategory('${c.key}'); switchView('directory');" class="bg-navy hover:bg-navy/80 p-5 rounded-2xl border border-slate-800 hover:border-gold/50 text-center transition group shadow-md">
+                    <i class="fa-solid ${c.icon} text-gold text-2xl mb-3 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="font-semibold text-slate-200 text-sm">${c.title}</h3>
+                </button>
+            `).join('');
+
+            const featured = getOpportunities().filter(o => o.featured).slice(0, 3);
+            document.getElementById('homeFeaturedGrid').innerHTML = featured.map(o => createCardHtml(o)).join('');
+        }
+
+        function executeHomeSearch() {
+            const query = document.getElementById('homeSearchInput').value;
+            document.getElementById('dirSearch').value = query;
+            switchView('directory');
+            renderDirectoryGrid();
+        }
+
+        function filterByCategory(catKey) {
+            const selectEl = document.getElementById('dirCategory');
+            if (selectEl) selectEl.value = catKey;
+            renderDirectoryGrid();
+        }
+
+        function renderDirectoryGrid() {
+            const q = document.getElementById('dirSearch').value.toLowerCase();
+            const cat = document.getElementById('dirCategory').value;
+            const state = document.getElementById('dirState').value;
+            const status = document.getElementById('dirStatus').value;
+
+            let data = getOpportunities();
+
+            if (q) data = data.filter(i => i.title.toLowerCase().includes(q) || i.description.toLowerCase().includes(q) || i.organization.toLowerCase().includes(q));
+            if (cat) data = data.filter(i => i.category === cat);
+            if (state) data = data.filter(i => i.state === state);
+            if (status) data = data.filter(i => i.status === status);
+
+            const grid = document.getElementById('directoryGrid');
+            if (data.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-16 text-center text-slate-400 bg-navy rounded-2xl border border-slate-800">No opportunities matching your filter criteria.</div>`;
+                return;
+            }
+            grid.innerHTML = data.map(o => createCardHtml(o)).join('');
+        }
+
+        function createCardHtml(opp) {
+            const isSaved = isOpportunitySaved(opp.id);
+            return `
+                <div class="bg-navy rounded-2xl border border-slate-800 p-6 flex flex-col justify-between shadow-xl hover:border-slate-700 transition">
+                    <div>
+                        <div class="flex justify-between items-start gap-2 mb-3">
+                            <span class="text-[10px] text-gold font-bold uppercase tracking-wider bg-royalBlue/30 px-3 py-1 rounded-md border border-gold/20">
+                                ${escapeHtml(opp.category)}
+                            </span>
+                            <span class="bg-slate-800 text-slate-300 text-xs px-2.5 py-1 rounded-full border border-slate-700">
+                                ${escapeHtml(opp.status)}
+                            </span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-1 leading-snug">${escapeHtml(opp.title)}</h3>
+                        <p class="text-xs text-gold/80 font-medium mb-3">${escapeHtml(opp.organization)}</p>
+                        <p class="text-slate-400 text-sm mb-4 line-clamp-2">${escapeHtml(opp.description)}</p>
+                    </div>
+                    <div class="border-t border-slate-800 pt-4 mt-auto">
+                        <div class="flex items-center justify-between text-xs text-slate-400 mb-4">
+                            <span><i class="fa-solid fa-location-dot text-gold/70 mr-1"></i> ${escapeHtml(opp.location)}</span>
+                            <span><i class="fa-solid fa-shield-check text-blue mr-1"></i> ${escapeHtml(opp.verification)}</span>
+                        </div>
+                        <div class="flex items-center justify-between gap-2">
+                            <button onclick="switchView('details', '${escapeHtml(opp.id)}')" class="text-gold text-sm font-semibold hover:underline flex items-center gap-1">
+                                View Details <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </button>
+                            <button onclick="toggleSaveOpportunity('${escapeHtml(opp.id)}')" class="text-xs px-3 py-1.5 rounded-lg border ${isSaved ? 'bg-gold/20 border-gold text-gold' : 'border-slate-700 text-slate-300 hover:border-gold hover:text-gold'} transition">
+                                <i class="fa-${isSaved ? 'solid' : 'regular'} fa-bookmark mr-1"></i> ${isSaved ? 'Saved' : 'Save'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderDetailsView(id) {
+            const opp = getOpportunityById(id);
+            const box = document.getElementById('detailsContentBox');
+            if (!opp) {
+                box.innerHTML = `<h2 class="text-xl font-bold text-red-400">Opportunity Not Found</h2><p class="text-slate-400 mt-2">The requested ID does not exist.</p>`;
+                return;
+            }
+
+            const hasValidUrl = opp.officialUrl && opp.officialUrl !== '#' && (opp.officialUrl.startsWith('http://') || opp.officialUrl.startsWith('https://'));
+
+            box.innerHTML = `
+                <div class="flex justify-between items-start gap-4 mb-4">
+                    <span class="text-xs text-gold font-bold uppercase tracking-wider bg-royalBlue/30 px-3 py-1 rounded-md border border-gold/20">
+                        ${escapeHtml(opp.category)}
+                    </span>
+                    <span class="bg-slate-800 text-slate-300 text-xs px-3 py-1 rounded-full border border-slate-700">
+                        ${escapeHtml(opp.status)}
+                    </span>
+                </div>
+                <h1 class="text-3xl font-extrabold text-white mb-2">${escapeHtml(opp.title)}</h1>
+                <p class="text-gold font-medium mb-6">${escapeHtml(opp.organization)} &bull; ${escapeHtml(opp.location)}</p>
+                
+                <div class="border-t border-b border-slate-800 py-6 my-6 space-y-4 text-slate-300 text-sm md:text-base">
+                    <p><strong>Eligibility:</strong> ${escapeHtml(opp.eligibility)}</p>
+                    <p><strong>Deadline:</strong> ${escapeHtml(opp.deadline)}</p>
+                    <p><strong>Verification Status:</strong> ${escapeHtml(opp.verification)}</p>
+                    <p><strong>Description:</strong> ${escapeHtml(opp.description)}</p>
+                </div>
+
+                <div class="flex flex-wrap gap-4 items-center pt-2">
+                    ${hasValidUrl 
+                        ? `<a href="${escapeHtml(opp.officialUrl)}" target="_blank" rel="noopener noreferrer" class="bg-gold hover:bg-goldHover text-darkNavy font-bold px-6 py-3 rounded-xl text-sm transition inline-flex items-center gap-2 shadow-lg">Visit Official Website <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i></a>` 
+                        : `<button class="bg-slate-800 text-slate-500 font-semibold px-6 py-3 rounded-xl text-sm cursor-not-allowed border border-slate-700" disabled>Official link not available yet.</button>`}
+                    
+                    <button onclick="toggleSaveOpportunity('${escapeHtml(opp.id)}'); switchView('details', '${escapeHtml(opp.id)}');" class="border border-slate-700 hover:border-gold text-slate-300 hover:text-gold px-6 py-3 rounded-xl text-sm transition">
+                        ${isOpportunitySaved(opp.id) ? 'Saved in Dashboard' : 'Save Opportunity'}
+                    </button>
+                </div>
+            `;
+        }
+
+        function getSavedIds() {
+            try { return JSON.parse(localStorage.getItem(SAVED_KEY) || '[]'); } catch (e) { return []; }
+        }
+
+        function isOpportunitySaved(id) {
+            return getSavedIds().includes(id);
+        }
+
+        function toggleSaveOpportunity(id) {
+            let saved = getSavedIds();
+            if (saved.includes(id)) {
+                saved = saved.filter(i => i !== id);
+            } else {
+                saved.push(id);
+            }
+            localStorage.setItem(SAVED_KEY, JSON.stringify(saved));
+            
+            if (document.getElementById('view-directory').classList.contains('active')) renderDirectoryGrid();
+            if (document.getElementById('view-home').classList.contains('active')) renderHomeViews();
+            if (document.getElementById('view-dashboard').classList.contains('active')) renderDashboardView();
+        }
+
+        function getUsersList() {
+            try { return JSON.parse(localStorage.getItem(USERS_KEY) || '[]'); } catch (e) { return []; }
+        }
+
+        function getCurrentUserSession() {
+            try { return JSON.parse(localStorage.getItem(CURRENT_USER_KEY)); } catch (e) { return null; }
+        }
+
+        function handleUserRegister(e) {
+            e.preventDefault();
+            const fullName = document.getElementById('regNameInput').value.trim();
+            const email = document.getElementById('regEmailInput').value.trim().toLowerCase();
+            const password = document.getElementById('regPassInput').value;
+            const confirmPass = document.getElementById('regConfirmPassInput').value;
+            const alertBox = document.getElementById('registerAlertBox');
+
+            if (password !== confirmPass) {
+                showAlert(alertBox, 'Passwords do not match.', 'error');
+                return;
+            }
+
+            let users = getUsersList();
+            if (users.some(u => u.email === email)) {
+                showAlert(alertBox, 'An account with this email already exists. Please sign in.', 'error');
+                return;
+            }
+
+            const newUser = { fullName, email, password, registrationDate: new Date().toISOString() };
+            users.push(newUser);
+            localStorage.setItem(USERS_KEY, JSON.stringify(users));
+            localStorage.setItem(CURRENT_USER_KEY, JSON.stringify({ fullName, email }));
+
+            updateNavAuthState();
+            switchView('dashboard');
+        }
+
+        function handleUserLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmailInput').value.trim().toLowerCase();
+            const password = document.getElementById('loginPassInput').value;
+            const alertBox = document.getElementById('loginAlertBox');
+
+            let users = getUsersList();
+            const found = users.find(u => u.email === email);
+
+            if (!found) {
+                showAlert(alertBox, 'Account not found. Please register first.', 'error');
+                return;
+            }
+            if (found.password !== password) {
+                showAlert(alertBox, 'Incorrect password. Please try again.', 'error');
+                return;
+            }
+
+            localStorage.setItem(CURRENT_USER_KEY, JSON.stringify({ fullName: found.fullName, email: found.email }));
+            updateNavAuthState();
+            switchView('dashboard');
+        }
+
+        function handleSignOut() {
+            localStorage.removeItem(CURRENT_USER_KEY);
+            updateNavAuthState();
+            switchView('home');
+        }
+
+        function showAlert(el, msg, type) {
+            el.className = `p-3 mb-4 rounded-xl text-sm ${type === 'error' ? 'bg-red-900/40 border border-red-500 text-red-200' : 'bg-green-900/40 border border-green-500 text-green-200'}`;
+            el.innerText = msg;
+            el.classList.remove('hidden');
+        }
+
+        function updateNavAuthState() {
+            const user = getCurrentUserSession();
+            const navAuth = document.getElementById('authNavButtons');
+            const navUser = document.getElementById('userNavSession');
+            const mobileAuth = document.getElementById('mobileAuthContainer');
+
+            if (user) {
+                if (navAuth) navAuth.classList.add('hidden');
+                if (navUser) {
+                    navUser.classList.remove('hidden');
+                    navUser.classList.add('flex');
+                    document.getElementById('navUserEmailDisplay').innerText = user.fullName || user.email;
+                }
+                if (mobileAuth) {
+                    mobileAuth.innerHTML = `
+                        <div class="text-xs text-gold font-semibold py-1">Signed in as ${escapeHtml(user.fullName || user.email)}</div>
+                        <button onclick="handleSignOut(); toggleMobileMenu();" class="w-full text-center py-2.5 bg-red-900/40 border border-red-500 text-red-200 rounded-xl text-sm font-semibold">Sign Out</button>
+                    `;
+                }
+            } else {
+                if (navAuth) navAuth.classList.remove('hidden');
+                if (navUser) {
+                    navUser.classList.remove('flex');
+                    navUser.classList.add('hidden');
+                }
+                if (mobileAuth) {
+                    mobileAuth.innerHTML = `
+                        <a href="#login" onclick="switchView('login'); toggleMobileMenu();" class="w-full text-center py-2.5 text-slate-300 border border-slate-700 rounded-xl text-sm">Sign In</a>
+                        <a href="#register" onclick="switchView('register'); toggleMobileMenu();" class="w-full text-center py-2.5 bg-gold text-darkNavy font-bold rounded-xl text-sm">Create Account</a>
+                    `;
+                }
+            }
+        }
+
+        function renderDashboardView() {
+            const user = getCurrentUserSession();
+            if (!user) return;
+
+            document.getElementById('dashProfileName').innerText = user.fullName || 'User';
+            document.getElementById('dashProfileEmail').innerText = user.email || '';
+
+            const savedIds = getSavedIds();
+            document.getElementById('dashSavedCount').innerText = savedIds.length;
+
+            const allOpp = getOpportunities();
+            document.getElementById('dashTotalCount').innerText = allOpp.length;
+
+            const savedOpp = allOpp.filter(o => savedIds.includes(o.id));
+            const container = document.getElementById('dashSavedList');
+
+            if (savedOpp.length === 0) {
+                container.innerHTML = `<div class="col-span-full bg-navy/50 p-8 rounded-2xl border border-slate-800 text-center text-slate-400">You have not saved any opportunities yet. Browse the directory to save items.</div>`;
+            } else {
+                container.innerHTML = savedOpp.map(o => createCardHtml(o)).join('');
+            }
+        }
+
+        function renderAdminView() {
+            const list = document.getElementById('adminOpportunitiesList');
+            const data = getOpportunities();
+            list.innerHTML = data.map(o => `
+                <div class="bg-darkNavy p-4 rounded-xl border border-slate-800 flex justify-between items-center gap-4">
+                    <div>
+                        <h3 class="font-bold text-white text-sm">${escapeHtml(o.title)}</h3>
+                        <p class="text-xs text-slate-400">${escapeHtml(o.category)} &bull; Status: ${escapeHtml(o.status)}</p>
+                    </div>
+                    <span class="text-xs bg-royalBlue/40 text-gold px-3 py-1 rounded-lg border border-gold/20 font-medium">${escapeHtml(o.verification)}</span>
+                </div>
+            `).join('');
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const icon = document.getElementById('mobileMenuIcon');
+            menu.classList.toggle('hidden');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-xmark');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            updateNavAuthState();
+            const hash = window.location.hash.replace('#', '');
+            if (hash && document.getElementById(`view-${hash}`)) {
+                switchView(hash);
+            } else {
+                switchView('home');
+            }
+        });
+
+        window.addEventListener('popstate', () => {
+            const hash = window.location.hash.replace('#', '');
+            if (hash && document.getElementById(`view-${hash}`)) {
+                switchView(hash);
+            }
+        });
+    </script>
+</body>
+</html>
